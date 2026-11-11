@@ -1,0 +1,113 @@
+<header class="page-header">
+  <div>
+    <h1>Videos</h1>
+    <p class="muted">{{ rows().length }} von {{ store.videos().length }} Videos</p>
+  </div>
+  <div class="page-actions">
+    <button class="btn btn-primary" (click)="creating.set(true)">+ Neues Video</button>
+  </div>
+</header>
+
+<div class="toolbar">
+  <input
+    type="search"
+    class="toolbar-search"
+    placeholder="Titel oder Beschreibung suchen…"
+    aria-label="Suchen"
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+  />
+  <select class="select-sm" aria-label="Status filtern" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+    <option [ngValue]="null">Alle Status</option>
+    @for (option of statusOptions; track option.value) {
+      <option [ngValue]="option.value">{{ option.label }}</option>
+    }
+  </select>
+  <select class="select-sm" aria-label="Creator filtern" [ngModel]="creatorFilter()" (ngModelChange)="creatorFilter.set($event)">
+    <option [ngValue]="null">Alle Creator</option>
+    @for (creator of store.creators(); track creator.id) {
+      <option [ngValue]="creator.id">{{ creator.name }}</option>
+    }
+  </select>
+  @if (search() || statusFilter() !== null || creatorFilter() !== null) {
+    <button class="btn btn-ghost btn-sm" (click)="resetFilters()">Filter zurücksetzen</button>
+  }
+</div>
+
+@if (actionError(); as message) {
+  <div class="alert alert-error">
+    <span>{{ message }}</span>
+    <button class="btn btn-ghost btn-sm" (click)="actionError.set(null)">Schließen</button>
+  </div>
+}
+
+@if (store.loading() && !store.loaded()) {
+  <p class="muted">Lade Daten…</p>
+} @else {
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><button class="th-sort" (click)="sortBy('title')">Titel {{ sortIndicator('title') }}</button></th>
+          <th><button class="th-sort" (click)="sortBy('creator')">Creator {{ sortIndicator('creator') }}</button></th>
+          <th><button class="th-sort" (click)="sortBy('status')">Status {{ sortIndicator('status') }}</button></th>
+          <th><button class="th-sort" (click)="sortBy('due')">Fällig {{ sortIndicator('due') }}</button></th>
+          <th class="num"><button class="th-sort" (click)="sortBy('price')">Preis {{ sortIndicator('price') }}</button></th>
+          <th class="actions"><span class="visually-hidden">Aktionen</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (video of rows(); track video.id) {
+          <tr>
+            <td>
+              <div class="cell-title">{{ video.title }}</div>
+              @if (video.description) {
+                <div class="cell-sub">{{ video.description }}</div>
+              }
+            </td>
+            <td><span class="chip">{{ store.creatorName(video.creatorId) }}</span></td>
+            <td>
+              <select
+                class="status-select"
+                aria-label="Status ändern"
+                [attr.data-status]="statusOption(video.status).key"
+                [ngModel]="video.status"
+                (ngModelChange)="changeStatus(video, $event)"
+              >
+                @for (option of statusOptions; track option.value) {
+                  <option [ngValue]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </td>
+            <td>
+              <span class="due-text" [attr.data-state]="dueState(video)">{{ video.due | date: 'dd.MM.yyyy' }}</span>
+            </td>
+            <td class="num">{{ video.price }} €</td>
+            <td class="actions">
+              <button class="btn btn-icon" title="Bearbeiten" (click)="editing.set(video)">✎</button>
+              <button class="btn btn-icon btn-icon-danger" title="Löschen" (click)="remove(video)">✕</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="table-empty">
+              @if (store.videos().length === 0) {
+                Noch keine Videos vorhanden.
+              } @else {
+                Keine Videos passen zu den Filtern.
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (editing(); as video) {
+  <app-video-form [video]="video" (closed)="editing.set(null)" />
+}
+
+@if (creating()) {
+  <app-video-form [initialCreatorId]="creatorFilter()" (closed)="creating.set(false)" />
+}

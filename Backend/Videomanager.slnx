@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="VideoManager.Api/VideoManager.Api.csproj" />
+  <Project Path="VideoManager.Application/VideoManager.Application.csproj" />
+  <Project Path="VideoManager.Domain/VideoManager.Domain.csproj" />
+  <Project Path="VideoManager.Infrastructure/VideoManager.Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,69 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.toolbar-search {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.cell-title {
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+
+.cell-sub {
+  max-width: 420px;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-select {
+  --status-color: var(--status-todo);
+  width: auto;
+  padding: 4px 28px 4px 10px;
+  border-radius: 999px;
+  border-color: color-mix(in srgb, var(--status-color) 45%, transparent);
+  background-color: color-mix(in srgb, var(--status-color) 14%, transparent);
+  color: var(--status-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &[data-status='progress'] {
+    --status-color: var(--status-progress);
+  }
+
+  &[data-status='done'] {
+    --status-color: var(--status-done);
+  }
+
+  option {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+}
+
+.due-text {
+  font-variant-numeric: tabular-nums;
+
+  &[data-state='overdue'] {
+    color: var(--danger);
+    font-weight: 600;
+  }
+
+  &[data-state='soon'] {
+    color: var(--warning);
+  }
+
+  &[data-state='done'] {
+    color: var(--text-muted);
+  }
+}

@@ -1,0 +1,93 @@
+<header class="page-header">
+  <div>
+    <h1>Creator</h1>
+    <p class="muted">{{ store.creators().length }} Creator</p>
+  </div>
+</header>
+
+<form class="create-form" (ngSubmit)="create()">
+  <input
+    name="newName"
+    maxlength="200"
+    placeholder="Name des neuen Creators"
+    aria-label="Name des neuen Creators"
+    [ngModel]="newName()"
+    (ngModelChange)="newName.set($event)"
+  />
+  <button type="submit" class="btn btn-primary" [disabled]="saving() || !newName().trim()">+ Anlegen</button>
+</form>
+
+@if (error(); as message) {
+  <div class="alert alert-error">
+    <span>{{ message }}</span>
+    <button class="btn btn-ghost btn-sm" (click)="error.set(null)">Schließen</button>
+  </div>
+}
+
+@if (store.loading() && !store.loaded()) {
+  <p class="muted">Lade Daten…</p>
+} @else {
+  <section class="money-overview" aria-label="Finanzübersicht">
+    <div class="overview-card overview-received">
+      <span class="overview-label">Bisher erhalten</span>
+      <strong class="overview-value">{{ formatMoney(totals().received) }}</strong>
+      <span class="overview-hint">aus erledigten Videos</span>
+    </div>
+    <div class="overview-card overview-due">
+      <span class="overview-label">Noch fällig</span>
+      <strong class="overview-value">{{ formatMoney(totals().due) }}</strong>
+      <span class="overview-hint">aus offenen Videos</span>
+    </div>
+  </section>
+
+  <div class="creator-grid">
+    @for (row of rows(); track row.creator.id) {
+      <article class="creator-card">
+        <div class="avatar" aria-hidden="true">{{ initial(row.creator.name) }}</div>
+
+        <div class="creator-main">
+          @if (editingId() === row.creator.id) {
+            <form class="edit-form" (ngSubmit)="saveEdit(row.creator)">
+              <input
+                name="editName"
+                maxlength="200"
+                aria-label="Name bearbeiten"
+                [ngModel]="editName()"
+                (ngModelChange)="editName.set($event)"
+                (keydown.escape)="editingId.set(null)"
+              />
+              <button type="submit" class="btn btn-primary btn-sm" [disabled]="saving()">Speichern</button>
+              <button type="button" class="btn btn-ghost btn-sm" (click)="editingId.set(null)">Abbrechen</button>
+            </form>
+          } @else {
+            <h2>{{ row.creator.name }}</h2>
+          }
+
+          <div class="creator-stats">
+            <span><strong>{{ row.total }}</strong> Videos</span>
+            <span><strong>{{ row.open }}</strong> offen</span>
+          </div>
+
+          <dl class="money">
+            <div class="money-item money-received">
+              <dt>Erhalten</dt>
+              <dd>{{ formatMoney(row.received) }}</dd>
+            </div>
+            <div class="money-item money-due">
+              <dt>Fällig</dt>
+              <dd>{{ formatMoney(row.due) }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="creator-actions">
+          <a class="btn btn-ghost btn-sm" routerLink="/videos" [queryParams]="{ creator: row.creator.id }">Videos</a>
+          <button class="btn btn-icon" title="Umbenennen" (click)="startEdit(row.creator)">✎</button>
+          <button class="btn btn-icon btn-icon-danger" title="Löschen" (click)="remove(row.creator, row.total)">✕</button>
+        </div>
+      </article>
+    } @empty {
+      <p class="muted">Noch keine Creator vorhanden. Lege oben den ersten an.</p>
+    }
+  </div>
+}

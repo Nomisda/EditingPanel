@@ -1,0 +1,31 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">▶</span>
+      <span>VideoManager</span>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/todo" routerLinkActive="active">Todo-Liste</a>
+      <a routerLink="/videos" routerLinkActive="active">Videos</a>
+      <a routerLink="/creators" routerLinkActive="active">Creator</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>{{ store.videos().length }} Videos · {{ store.creators().length }} Creator</span>
+      <button class="btn btn-ghost btn-sm" [disabled]="store.loading()" (click)="store.load()">
+        {{ store.loading() ? 'Lädt…' : 'Aktualisieren' }}
+      </button>
+    </div>
+  </aside>
+
+  <main class="content">
+    @if (store.error(); as message) {
+      <div class="alert alert-error">
+        <span>{{ message }}</span>
+        <button class="btn btn-ghost btn-sm" (click)="store.load()">Erneut versuchen</button>
+      </div>
+    }
+    <router-outlet />
+  </main>
+</div>

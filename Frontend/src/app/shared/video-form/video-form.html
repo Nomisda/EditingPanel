@@ -1,0 +1,76 @@
+<div class="modal-backdrop">
+  <form class="modal" [formGroup]="form" (ngSubmit)="submit()" role="dialog" aria-modal="true">
+    <header class="modal-header">
+      <h2>{{ video() ? 'Video bearbeiten' : 'Neues Video' }}</h2>
+      <button type="button" class="btn btn-icon" (click)="closed.emit()" aria-label="Schließen">✕</button>
+    </header>
+
+    <div class="modal-body">
+      <label class="field">
+        <span>Titel *</span>
+        <input formControlName="title" maxlength="200" placeholder="z. B. Unboxing Kamera" />
+        @if (form.controls.title.touched && form.controls.title.invalid) {
+          <small class="field-error">Titel ist erforderlich.</small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Beschreibung</span>
+        <textarea formControlName="description" rows="4" maxlength="4000"></textarea>
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Creator *</span>
+          <select formControlName="creatorId">
+            <option [ngValue]="null" disabled>Creator wählen…</option>
+            @for (creator of creators(); track creator.id) {
+              <option [ngValue]="creator.id">{{ creator.name }}</option>
+            }
+          </select>
+          @if (creators().length === 0) {
+            <small class="field-hint">Lege zuerst einen Creator an.</small>
+          } @else if (form.controls.creatorId.touched && form.controls.creatorId.invalid) {
+            <small class="field-error">Bitte einen Creator wählen.</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Status</span>
+          <select formControlName="status">
+            @for (option of statusOptions; track option.value) {
+              <option [ngValue]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Preis (€)</span>
+          <input type="number" min="0" step="1" formControlName="price" />
+          @if (form.controls.price.touched && form.controls.price.invalid) {
+            <small class="field-error">Preis muss 0 oder größer sein.</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Fällig am</span>
+          <input type="date" formControlName="due" />
+          <small class="field-hint">Leer lassen = in 3 Tagen</small>
+        </label>
+      </div>
+
+      @if (error(); as message) {
+        <div class="alert alert-error">{{ message }}</div>
+      }
+    </div>
+
+    <footer class="modal-footer">
+      <button type="button" class="btn btn-ghost" (click)="closed.emit()">Abbrechen</button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Speichern…' : 'Speichern' }}
+      </button>
+    </footer>
+  </form>
+</div>

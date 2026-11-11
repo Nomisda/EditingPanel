@@ -1,0 +1,131 @@
+<header class="page-header">
+  <div>
+    <h1>Todo-Liste</h1>
+    <p class="muted">Videos nach Status. Per Drag &amp; Drop oder mit den Pfeilen weiterschieben.</p>
+  </div>
+  <div class="page-actions">
+    <select
+      class="select-sm"
+      aria-label="Nach Creator filtern"
+      [ngModel]="creatorFilter()"
+      (ngModelChange)="creatorFilter.set($event)"
+    >
+      <option [ngValue]="null">Alle Creator</option>
+      @for (creator of store.creators(); track creator.id) {
+        <option [ngValue]="creator.id">{{ creator.name }}</option>
+      }
+    </select>
+    <button class="btn btn-primary" (click)="creatingStatus.set(1)">+ Neues Video</button>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="stat">
+    <span class="stat-value">{{ stats().total }}</span>
+    <span class="stat-label">Videos gesamt</span>
+  </div>
+  <div class="stat" [class.stat-danger]="stats().overdue > 0">
+    <span class="stat-value">{{ stats().overdue }}</span>
+    <span class="stat-label">überfällig</span>
+  </div>
+  <div class="stat" [class.stat-warning]="stats().soon > 0">
+    <span class="stat-value">{{ stats().soon }}</span>
+    <span class="stat-label">in den nächsten 2 Tagen fällig</span>
+  </div>
+  <div class="stat stat-progress">
+    <div class="stat-progress-head">
+      <span class="stat-value">{{ stats().progress }} %</span>
+      <span class="stat-label">erledigt</span>
+    </div>
+    <div class="progress"><div class="progress-bar" [style.width.%]="stats().progress"></div></div>
+  </div>
+</section>
+
+@if (actionError(); as message) {
+  <div class="alert alert-error">
+    <span>{{ message }}</span>
+    <button class="btn btn-ghost btn-sm" (click)="actionError.set(null)">Schließen</button>
+  </div>
+}
+
+@if (store.loading() && !store.loaded()) {
+  <p class="muted">Lade Daten…</p>
+} @else {
+  <div class="board">
+    @for (column of columns(); track column.value) {
+      <section
+        class="column"
+        [attr.data-status]="column.key"
+        [class.drag-over]="dragOver() === column.value"
+        (dragover)="onDragOver($event, column.value)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event, column.value)"
+      >
+        <header class="column-header">
+          <span class="column-dot"></span>
+          <h2>{{ column.label }}</h2>
+          <span class="column-count">{{ column.videos.length }}</span>
+          <button
+            class="btn btn-icon"
+            title="Video in „{{ column.label }}“ anlegen"
+            (click)="creatingStatus.set(column.value)"
+          >
+            +
+          </button>
+        </header>
+
+        <div class="column-body">
+          @for (video of column.videos; track video.id) {
+            @let due = dueState(video);
+            <article
+              class="task"
+              draggable="true"
+              [class.task-busy]="busyIds().has(video.id)"
+              [class.task-done]="video.status === 3"
+              (dragstart)="onDragStart($event, video)"
+              (dragend)="dragOver.set(null)"
+            >
+              <div class="task-top">
+                <h3>{{ video.title }}</h3>
+                <span class="due" [attr.data-state]="due" [title]="due === 'overdue' ? 'Überfällig' : 'Fällig am'">
+                  {{ video.due | date: 'dd.MM.yyyy' }}
+                </span>
+              </div>
+
+              @if (video.description) {
+                <p class="task-desc">{{ video.description }}</p>
+              }
+
+              <div class="task-meta">
+                <span class="chip">{{ store.creatorName(video.creatorId) }}</span>
+                <span class="price">{{ video.price }} €</span>
+              </div>
+
+              <div class="task-actions">
+                <button class="btn btn-icon" title="Zurück" [disabled]="video.status === 1" (click)="moveBy(video, -1)">←</button>
+                <button class="btn btn-icon" title="Weiter" [disabled]="video.status === 3" (click)="moveBy(video, 1)">→</button>
+                <span class="spacer"></span>
+                <button class="btn btn-icon" title="Bearbeiten" (click)="editing.set(video)">✎</button>
+                <button class="btn btn-icon btn-icon-danger" title="Löschen" (click)="remove(video)">✕</button>
+              </div>
+            </article>
+          } @empty {
+            <p class="column-empty">Keine Einträge</p>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}
+
+@if (editing(); as video) {
+  <app-video-form [video]="video" (closed)="editing.set(null)" />
+}
+
+@if (creatingStatus(); as status) {
+  <app-video-form
+    [initialStatus]="status"
+    [initialCreatorId]="creatorFilter()"
+    (closed)="creatingStatus.set(null)"
+  />
+}

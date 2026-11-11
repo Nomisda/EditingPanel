@@ -1,0 +1,234 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.stat-danger .stat-value {
+  color: var(--danger);
+}
+
+.stat-warning .stat-value {
+  color: var(--warning);
+}
+
+.stat-progress-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.progress {
+  height: 6px;
+  margin-top: 10px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--status-done);
+  transition: width 0.3s ease;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column {
+  --column-color: var(--status-todo);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+
+  &[data-status='progress'] {
+    --column-color: var(--status-progress);
+  }
+
+  &[data-status='done'] {
+    --column-color: var(--status-done);
+  }
+
+  &.drag-over {
+    border-color: var(--column-color);
+    background: color-mix(in srgb, var(--column-color) 8%, var(--surface));
+  }
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 12px 16px;
+  border-bottom: 1px solid var(--border);
+
+  h2 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+}
+
+.column-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--column-color);
+}
+
+.column-count {
+  margin-right: auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.column-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 120px;
+  padding: 12px;
+}
+
+.column-empty {
+  margin: 24px 0;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 0.875rem;
+}
+
+.task {
+  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--column-color);
+  border-radius: var(--radius-sm);
+  cursor: grab;
+  transition:
+    border-color 0.15s,
+    opacity 0.15s;
+
+  &:hover {
+    border-color: var(--border-strong);
+    border-left-color: var(--column-color);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.task-busy {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &.task-done h3 {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+}
+
+.task-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+
+  h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+}
+
+.due {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-3);
+  color: var(--text-muted);
+
+  &[data-state='overdue'] {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  &[data-state='soon'] {
+    background: var(--warning-soft);
+    color: var(--warning);
+  }
+}
+
+.task-desc {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.price {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+}

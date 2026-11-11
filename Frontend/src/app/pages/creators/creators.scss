@@ -1,0 +1,165 @@
+.create-form {
+  display: flex;
+  gap: 10px;
+  max-width: 560px;
+  margin-bottom: 20px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.creator-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+  gap: 12px;
+}
+
+.creator-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.creator-main {
+  flex: 1;
+  min-width: 0;
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+}
+
+.edit-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+
+  input {
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: 6px 10px;
+  }
+}
+
+.creator-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+
+  strong {
+    color: var(--text);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.creator-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.money-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.overview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--overview-color);
+  border-radius: var(--radius);
+}
+
+.overview-received {
+  --overview-color: var(--status-done);
+}
+
+.overview-due {
+  --overview-color: var(--warning);
+}
+
+.overview-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.overview-value {
+  color: var(--overview-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-hint {
+  color: var(--text-faint);
+  font-size: 0.75rem;
+}
+
+.money {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+
+.money-item {
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+
+  dt {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.money-received dd {
+  color: var(--status-done);
+}
+
+.money-due dd {
+  color: var(--warning);
+}

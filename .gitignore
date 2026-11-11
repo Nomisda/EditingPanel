@@ -1,0 +1,14 @@
+# .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo
+*.rsuser
+
+# Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
